@@ -15,7 +15,8 @@ dependencies = [
     "alembic",
     "passlib[argon2]",
     "python-jose[cryptography]",
-    "python-multipart"
+    "python-multipart",
+    "fastapi-mail"
 ]
 
 [tool.maturin]
