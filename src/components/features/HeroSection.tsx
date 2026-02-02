@@ -50,14 +50,7 @@ export const HeroSection = () => {
                 </div>
             </div>
 
-            {/* Decorative Vertical Text */}
-            <div className="absolute left-8 top-1/2 -translate-y-1/2 hidden md:block select-none">
-                <div className="writing-vertical-rl font-serif text-deep-crimson/50 text-xs tracking-widest h-64 flex justify-between">
-                    <span>仮想現実</span>
-                    <span>電子幽霊</span>
-                    <span>技術的特異点</span>
-                </div>
-            </div>
+
 
             <div className="absolute right-8 bottom-12 hidden md:block select-none">
                 <div className="font-mono text-[10px] text-gray-600 tracking-widest">
