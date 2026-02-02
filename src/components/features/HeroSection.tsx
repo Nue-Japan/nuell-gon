@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ActionButton } from "@/components/ui/ActionButton";
 
 export const HeroSection = () => {
+    const router = useRouter();
     const [offset, setOffset] = useState({ x: 0, y: 0 });
 
     // Mouse parallax effect for background
@@ -46,7 +48,7 @@ export const HeroSection = () => {
                 </p>
 
                 <div className="mt-8 animate-fade-in-up" style={{ animationDelay: "0.5s" }}>
-                    <ActionButton onClick={() => console.log("System Check Initiated")} />
+                    <ActionButton onClick={() => router.push("/system-check")} />
                 </div>
             </div>
 
