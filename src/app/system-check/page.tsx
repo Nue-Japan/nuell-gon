@@ -118,7 +118,7 @@ export default function SystemCheckPage() {
                 {isComplete && (
                     <div className="flex justify-center animate-fade-in-up">
                         <button
-                            onClick={() => console.log("Entering Mainframe...")}
+                            onClick={() => router.push("/mainframe")}
                             className="px-8 py-3 bg-neon-purple text-black font-bold hover:bg-white hover:text-neon-purple transition-colors duration-300 shadow-[0_0_15px_#A855F7]"
                         >
                             ENTER MAINFRAME
