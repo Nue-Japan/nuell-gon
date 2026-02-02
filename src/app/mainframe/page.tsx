@@ -34,7 +34,7 @@ const GlobalUplinks = () => (
 );
 
 // --- Code Breaker Game Logic ---
-const CodeBreaker = ({ onEnd }: { onEnd: (score: number) => void }) => {
+const CodeBreaker = ({ onEnd, onQuit }: { onEnd: (score: number) => void, onQuit: () => void }) => {
     const [target, setTarget] = useState("");
     const [guesses, setGuesses] = useState<{ guess: string, hit: number, blow: number }[]>([]);
     const [input, setInput] = useState("");
@@ -57,8 +57,14 @@ const CodeBreaker = ({ onEnd }: { onEnd: (score: number) => void }) => {
     const handleGuess = (e: React.FormEvent) => {
         e.preventDefault();
         if (gameOver) return;
+
+        if (input.toLowerCase() === "quit" || input.toLowerCase() === "exit") {
+            onQuit();
+            return;
+        }
+
         if (input.length !== 4 || new Set(input).size !== 4 || isNaN(Number(input))) {
-            setMessage("INVALID INPUT. ENTER 4 UNIQUE DIGITS.");
+            setMessage("INVALID INPUT. ENTER 4 UNIQUE DIGITS. OR TYPE 'QUIT' TO EXIT.");
             setInput("");
             return;
         }
@@ -81,7 +87,9 @@ const CodeBreaker = ({ onEnd }: { onEnd: (score: number) => void }) => {
         if (hit === 4) {
             setMessage(`ACCESS GRANTED. CODE BROKEN IN ${newGuesses.length} ATTEMPTS.`);
             setGameOver(true);
-            onEnd(1000 - (newGuesses.length * 50));
+            setTimeout(() => {
+                onEnd(1000 - (newGuesses.length * 50));
+            }, 1000); // Small delay to read message
         } else {
             setMessage(`HIT: ${hit} | BLOW: ${blow}`);
         }
@@ -89,9 +97,14 @@ const CodeBreaker = ({ onEnd }: { onEnd: (score: number) => void }) => {
 
     return (
         <div className="font-mono text-xs p-2 bg-gray-900 rounded mb-2 border border-gray-700">
-            <div className="text-neon-purple mb-2 font-bold flex items-center gap-2">
-                <Lock size={12} />
-                CODE BREAKER PROTOCOL
+            <div className="text-neon-purple mb-2 font-bold flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <Lock size={12} />
+                    CODE BREAKER PROTOCOL
+                </div>
+                <button onClick={onQuit} className="text-gray-500 hover:text-white">
+                    <XIcon size={12} />
+                </button>
             </div>
             <div className="mb-2 text-gray-400">{message}</div>
             <div className="space-y-1 mb-2 max-h-32 overflow-y-auto">
@@ -104,7 +117,7 @@ const CodeBreaker = ({ onEnd }: { onEnd: (score: number) => void }) => {
                     </div>
                 ))}
             </div>
-            {!gameOver ? (
+            {!gameOver && (
                 <form onSubmit={handleGuess} className="flex gap-2">
                     <input
                         type="text"
@@ -112,17 +125,13 @@ const CodeBreaker = ({ onEnd }: { onEnd: (score: number) => void }) => {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         className="bg-black border border-gray-600 focus:border-neon-purple outline-none px-2 py-1 flex-1 text-white"
-                        placeholder="####"
+                        placeholder="#### (or 'quit')"
                         autoFocus
                     />
                     <button type="submit" className="px-2 bg-gray-700 hover:bg-neon-purple text-white rounded">
                         ENTER
                     </button>
                 </form>
-            ) : (
-                <button onClick={() => setGameOver(false) || window.location.reload()} className="text-neon-purple hover:underline">
-                    SYSTEM RESET REQUIRED
-                </button>
             )}
         </div>
     );
@@ -155,7 +164,7 @@ const SystemTerminal = () => {
 
         if (cmd === "game") {
             setGameMode(true);
-            setHistory(prev => [...prev, "INITIALIZING SECURITY PROTOCOL..."]);
+            setHistory(prev => [...prev, "INITIALIZING SECURITY PROTOCOL...", "TYPE 'QUIT' TO ABORT."]);
             return;
         }
 
@@ -199,10 +208,16 @@ const SystemTerminal = () => {
 
                 {gameMode && (
                     <div className="mt-2 text-white">
-                        <CodeBreaker onEnd={(score) => {
-                            setGameMode(false);
-                            setHistory(prev => [...prev, `GAME OVER. SCORE: ${score}`]);
-                        }} />
+                        <CodeBreaker
+                            onEnd={(score) => {
+                                setGameMode(false);
+                                setHistory(prev => [...prev, `GAME COMPLETE. SCORE BUFFERED: ${score}`]);
+                            }}
+                            onQuit={() => {
+                                setGameMode(false);
+                                setHistory(prev => [...prev, "GAME ABORTED BY USER."]);
+                            }}
+                        />
                     </div>
                 )}
 
@@ -238,6 +253,9 @@ const SnakeGame = ({ onClose }: { onClose: () => void }) => {
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
+        // Focus the canvas/window to receive key events immediately
+        canvas.focus();
+
         const gridSize = 20;
         let snake = [{ x: 10, y: 10 }];
         let food = { x: 15, y: 15 };
@@ -261,6 +279,12 @@ const SnakeGame = ({ onClose }: { onClose: () => void }) => {
 
         const update = () => {
             if (gameOver) return;
+
+            // Don't move if not started
+            if (dx === 0 && dy === 0) {
+                draw();
+                return;
+            }
 
             const head = { x: snake[0].x + dx, y: snake[0].y + dy };
 
@@ -292,24 +316,32 @@ const SnakeGame = ({ onClose }: { onClose: () => void }) => {
         };
 
         const handleKey = (e: KeyboardEvent) => {
+            // Prevent scrolling
+            if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(e.code) > -1) {
+                e.preventDefault();
+            }
+
             if (e.key === "ArrowUp" && dy === 0) { dx = 0; dy = -1; }
             if (e.key === "ArrowDown" && dy === 0) { dx = 0; dy = 1; }
             if (e.key === "ArrowLeft" && dx === 0) { dx = -1; dy = 0; }
             if (e.key === "ArrowRight" && dx === 0) { dx = 1; dy = 0; }
         };
 
-        document.addEventListener("keydown", handleKey);
+        window.addEventListener("keydown", handleKey);
         loop = setInterval(update, 100);
+
+        // Initial draw
+        draw();
 
         return () => {
             clearInterval(loop);
-            document.removeEventListener("keydown", handleKey);
+            window.removeEventListener("keydown", handleKey);
         };
     }, [gameOver]);
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md">
-            <div className="bg-gray-900 p-4 border border-neon-purple rounded-lg shadow-[0_0_30px_#A855F7]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-gray-900 p-4 border border-neon-purple rounded-lg shadow-[0_0_30px_#A855F7] outline-none" tabIndex={0}>
                 <div className="flex justify-between items-center mb-4 text-white">
                     <h2 className="text-xl font-bold font-mono">HIDDEN PROTOCOL: SNAKE</h2>
                     <button onClick={onClose}><XIcon /></button>
@@ -319,7 +351,7 @@ const SnakeGame = ({ onClose }: { onClose: () => void }) => {
                     <div>SCORE: {score}</div>
                     {gameOver && <div className="text-red-500 font-bold animate-pulse">GAME OVER</div>}
                 </div>
-                <p className="text-xs text-gray-500 mt-2 text-center">Use Arrow Keys to Move</p>
+                <p className="text-xs text-gray-500 mt-2 text-center">Use Arrow Keys to Move (Click to Focus if needed)</p>
                 {gameOver && (
                     <button
                         onClick={() => { setGameOver(false); setScore(0); }}
