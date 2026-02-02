@@ -1,0 +1,22 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "nuell_gon_backend"
+version = "0.1.0"
+description = "Backend for Nuell Gon"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "psycopg2-binary",
+    "sqlmodel",
+    "alembic",
+    "passlib[argon2]",
+    "python-jose[cryptography]",
+    "python-multipart"
+]
+
+[tool.maturin]
+features = ["pyo3/extension-module"]

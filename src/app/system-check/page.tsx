@@ -18,12 +18,12 @@ export default function SystemCheckPage() {
 
     // Diagnostic steps configuration
     const steps = [
-        { progress: 10, message: "Initializing core systems...", duration: 800 },
-        { progress: 30, message: "Bypassing biometric firewalls...", duration: 1200 },
-        { progress: 45, message: "Decrypting neural link parameters...", duration: 1000 },
-        { progress: 60, message: "Establishing handshake with NUE-NET...", duration: 1500 },
-        { progress: 85, message: "Verifying cognitive resonance...", duration: 1200 },
-        { progress: 100, message: "COMPATIBILITY CONFIRMED. ACCESS GRANTED.", duration: 800, type: "success" },
+        { progress: 10, message: "コアシステムを初期化中...", duration: 800 },
+        { progress: 30, message: "生体認証ファイアウォールをバイパス中...", duration: 1200 },
+        { progress: 45, message: "ニューラルリンクパラメータを復号化中...", duration: 1000 },
+        { progress: 60, message: "NUE-NETとのハンドシェイクを確立中...", duration: 1500 },
+        { progress: 85, message: "認知的共鳴を確認中...", duration: 1200 },
+        { progress: 100, message: "互換性が確認されました。アクセスを許可します。", duration: 800, type: "success" },
     ];
 
     useEffect(() => {
@@ -121,7 +121,7 @@ export default function SystemCheckPage() {
                             onClick={() => router.push("/mainframe")}
                             className="px-8 py-3 bg-neon-purple text-black font-bold hover:bg-white hover:text-neon-purple transition-colors duration-300 shadow-[0_0_15px_#A855F7]"
                         >
-                            ENTER MAINFRAME
+                            メインフレームへ接続
                         </button>
                     </div>
                 )}

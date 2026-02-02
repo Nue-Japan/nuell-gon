@@ -17,7 +17,7 @@ export default function MainframePage() {
                     <div className="flex items-center gap-4 font-mono text-xs mt-4 md:mt-0">
                         <span className="text-green-500">CONNECTION: SECURE</span>
                         <span className="text-gray-500">|</span>
-                        <span className="text-neon-purple">USER: GUEST_01</span>
+                        <span className="text-neon-purple">USER: Nue-Japan</span>
                     </div>
                 </header>
 
@@ -27,7 +27,7 @@ export default function MainframePage() {
                     {/* 1. Chimera Specs */}
                     <ServiceCard
                         title="Chimera Specs"
-                        description="Analyze local hardware capabilities and compatibility."
+                        description="ローカルハードウェアの能力と互換性を分析します。"
                         icon={Cpu}
                         status="READY"
                         href="/chimera-specs"
@@ -36,30 +36,28 @@ export default function MainframePage() {
                     {/* 2. Nue Archives */}
                     <ServiceCard
                         title="Nue Archives"
-                        description="Access developer history, skills, and project logs."
+                        description="開発者の履歴、スキル、プロジェクトログへのアクセス。"
                         icon={Archive}
                         status="ONLINE"
                         href="/archives"
                     />
 
-                    {/* 3. Board */}
+                    {/* 3. Board -> Comm Link */}
                     <ServiceCard
                         title="Comm Link"
-                        description="Encrypted communication channel with the developer."
+                        description="開発者への暗号化通信チャンネル。"
                         icon={MessageSquare}
-                        status="LOCKED"
-                        disabled={true}
+                        status="ONLINE"
+                        href="/comm-link"
                     />
 
-                    {/* 4. System Status */}
-                    {/* Custom Content for Metrics could be handled inside ServiceCard or a separate component. 
-                For now using ServiceCard with a static description as per spec. 
-            */}
+                    {/* 4. Core Systems */}
                     <ServiceCard
                         title="Core Systems"
-                        description="Backend Status: STABLE | API Latency: 45ms | Active Nodes: 3"
+                        description="バックエンドステータス: 安定 | API レイテンシ: 45ms"
                         icon={Activity}
                         status="STABLE"
+                        href="/core-systems"
                     />
 
                 </div>
